@@ -1,5 +1,6 @@
 const TelegramApi = require("node-telegram-bot-api")
-require("dotenv").config()
+// require("dotenv").config()
+const config = require("./config")
 const helper = require("./helper")
 const sequelize = require("./db")
 const questions = require("./questions")
@@ -7,7 +8,7 @@ const { CronJob } = require("cron");
 
 
 
-const bot = new TelegramApi(process.env.TOKEN,  { polling: true })
+const bot = new TelegramApi(config.TOKEN,  { polling: true })
 
 const sendMsg = async(chat_id, text, keyboard) => {
     await bot.sendMessage(chat_id, text, {
@@ -79,7 +80,7 @@ const start = async() => {
                 )
             }
 
-            if ( msg_text === "/send_msg" && chat_id == process.env.ADMIN_ID ) {
+            if ( msg_text === "/send_msg" && chat_id == config.ADMIN_ID ) {
                 await helper.setUser(chat_id, { status: 1 });
                 return sendMsg( chat_id, 'Напишите текст для рассылки:');
             }
@@ -87,7 +88,7 @@ const start = async() => {
             const user = await helper.getUser(chat_id);
             const statusUser = user?.status
 
-            if ( statusUser == 1 && chat_id == process.env.ADMIN_ID ) {
+            if ( statusUser == 1 && chat_id == config.ADMIN_ID ) {
 
                 const text = msg.text;
                 const entities = msg.entities
@@ -134,7 +135,7 @@ const start = async() => {
 
         try { 
 
-            if ( data == 'admin_send' && chat_id == process.env.ADMIN_ID ) {
+            if ( data == 'admin_send' && chat_id == config.ADMIN_ID ) {
                 await editMsg(chat_id, '*Начался процесс рассылки сообщений...*', [], message_id);
                 await helper.setUser(chat_id, {status: 3})
 
@@ -187,7 +188,7 @@ const start = async() => {
                 return console.log('Рассылка завершилась!')
             }
 
-            if ( data == 'admin_no' && chat_id == process.env.ADMIN_ID ) {
+            if ( data == 'admin_no' && chat_id == config.ADMIN_ID ) {
                 await helper.setUser(chat_id, {status: 2})
                 return await editMsg(chat_id, '❌ *Вы отменили отправку*', [], message_id);
             }

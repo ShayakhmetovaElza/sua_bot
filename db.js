@@ -1,9 +1,11 @@
 const { Sequelize } = require("sequelize")
 
+const config = require("./config")
+
 module.exports = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
+    config.DB_NAME,
+    config.DB_USER,
+    config.DB_PASSWORD,
     {
         dialect: "sqlite",
         host: "./dev.sqlite"
